@@ -2,13 +2,13 @@ const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 
 const {
-  typeDefs: bookTypeDefs,
-  resolvers: bookResolvers,
-} = require("./schemas/book");
+  typeDefs: userTypeDefs,
+  resolvers: userResolvers,
+} = require("./schemas/user");
 
 const server = new ApolloServer({
-  typeDefs: [bookTypeDefs],
-  resolvers: [bookResolvers],
+  typeDefs: [userTypeDefs],
+  resolvers: [userResolvers],
 });
 
 startStandaloneServer(server, {
