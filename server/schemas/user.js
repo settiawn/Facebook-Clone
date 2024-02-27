@@ -6,16 +6,16 @@ const typeDefs = `#graphql
   type User {
     _id: ID
     name: String
-    username: String
-    email: String
-    password: String
+    username: String!
+    email: String!
+    password: String!
   }
 
   input newUser {
     name: String
-    username: String
-    email: String
-    password: String
+    username: String!
+    email: String!
+    password: String!
   }
 
   type Token {
@@ -50,6 +50,8 @@ const resolvers = {
         const { email, password } = args;
         if (!email) throw new Error("Email tidak boleh kosong");
         if (!password) throw new Error("Password tidak boleh kosong");
+        if (password.length < 5)
+          throw new Error("Password harus lebih dari 5 huruf");
         const token = await User.getUser(email, password);
         return { token };
       } catch (error) {
