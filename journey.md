@@ -4,36 +4,36 @@
 
 ### Setup Project: Tema Aplikasi, Apollo Server, GraphQL
 Silahkan setup project aplikasi server kamu:
-- [ ] Install MongoDB database pada komputer kamu atau menggunakan MongoDB Atlas
-- [ ] Install package yang dibutuhkan: @apollo/server, graphql dan mongodb sebagai MongoDB driver
-- [ ] Pilih tema sesuai dengan pilihan dan kesepakatan instructor, tuliskan dalam README github kamu
-- [ ] Buatlah aplikasi server GraphQL menggunakan Apollo Server dengan PORT default: 3000
+- [x] Install MongoDB database pada komputer kamu atau menggunakan MongoDB Atlas
+- [x] Install package yang dibutuhkan: @apollo/server, graphql dan mongodb sebagai MongoDB driver
+- [x] Pilih tema sesuai dengan pilihan dan kesepakatan instructor, tuliskan dalam README github kamu
+- [x] Buatlah aplikasi server GraphQL menggunakan Apollo Server dengan PORT default: 3000
 
 
 ### GraphQL - Apollo Server
 Buatlah Aplikasi server GraphQL dengan menggunakan Apollo Server yang memiliki fungsi sebagai berikut:
-- [ ] Register (Mutation)
-- [ ] Login (Query)
-- [ ] Get Post (Query)
-- [ ] Add Post (Mutation)
-- [ ] Comment Post (Mutation)
-- [ ] Search User (Query)
+- [x] Register (Mutation)
+- [x] Login (Query)
+- [x] Get Post (Query)
+- [x] Add Post (Mutation)
+- [x] Comment Post (Mutation)
+- [x] Search User (Query)
 - [ ] Follow (Mutation)
-- [ ] Get User (Query)
-- [ ] Like Post (Mutation)
+- [x] Get User (Query)
+- [x] Like Post (Mutation)
 
 ### MongoDB 1
 Buatlah fungsi/method pada aplikasi server GraphQL kamu yang menghubungkan dengan database MongoDB dengan fungsi sebagai berikut:
-- [ ] Add user: untuk kebutuhan register
-- [ ] Get user by username dan password: untuk kebutuhan login
-- [ ] Search users by name/username: untuk kebutuhan mencari user berdasarkan nama atau username
+- [x] Add user: untuk kebutuhan register
+- [x] Get user by username dan password: untuk kebutuhan login
+- [x] Search users by name/username: untuk kebutuhan mencari user berdasarkan nama atau username
 - [ ] Follow User: untuk kebutuhan memfollow user
 - [ ] Get User by Id: untuk menampilkan profile user
-- [ ] Add Post: untuk menambahkan post baru
-- [ ] Get Posts: mengambil daftar post berdasarkan yang terbaru
-- [ ] Get Post by Id: mengambil post berdasarkan id
-- [ ] Comment Post: untuk menambahkan komentar pada post
-- [ ] Like Post: untuk menambahkan like pada post
+- [x] Add Post: untuk menambahkan post baru
+- [x] Get Posts: mengambil daftar post berdasarkan yang terbaru
+- [x] Get Post by Id: mengambil post berdasarkan id
+- [x] Comment Post: untuk menambahkan komentar pada post
+- [x] Like Post: untuk menambahkan like pada post
 
 
 ## Day 2

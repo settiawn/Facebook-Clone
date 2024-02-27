@@ -9,14 +9,33 @@ const {
   typeDefs: postTypeDefs,
   resolvers: postResolvers,
 } = require("./schemas/post");
+const {
+  typeDefs: followTypeDefs,
+  resolvers: followResolvers,
+} = require("./schemas/follow");
+const { verifyToken } = require("./helpers/jwt");
+const { ObjectId } = require("mongodb");
 
 const server = new ApolloServer({
-  typeDefs: [userTypeDefs, postTypeDefs],
-  resolvers: [userResolvers, postResolvers],
+  typeDefs: [userTypeDefs, postTypeDefs, followTypeDefs],
+  resolvers: [userResolvers, postResolvers, followResolvers],
 });
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
+  context: async ({ req }) => {
+    return {
+      auth: () => {
+        const { authorization } = req.headers;
+        const [type, token] = authorization.split(" ");
+        if (type !== "Bearer") throw new Error("Auth failed");
+        const decoded = verifyToken(token);
+        if (!decoded) throw new Error("Auth failed");
+        decoded.id = new ObjectId(String(decoded.id))
+        return decoded
+      },
+    };
+  },
 }).then(({ url }) => {
   console.log(`🚀  Server ready at: ${url}`);
 });

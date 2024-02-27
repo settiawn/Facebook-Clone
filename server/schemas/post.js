@@ -35,27 +35,51 @@ const typeDefs = `#graphql
   type Query {
     getPosts : [Post]
     getPostById(id: String) : Post
+
   }
 
   type Mutation {
     createPost(newPost: newPost): Post
+    likePost(id: String) : Post
+    commentPost(id: String, content: String) : Post
   }
 `;
 
 const resolvers = {
   Query: {
     getPosts: async () => {
-      return "ok";
+      const result = await Posts.findAll();
+      return result;
     },
     getPostById: async (_, args) => {
-      return "ok";
+      const { id } = args;
+      const result = await Posts.findById(id);
+      return result;
     },
   },
   Mutation: {
-    createPost: async (_, args) => {
-      const post = {...args.newPost}
-      const result = Posts.addPost(post);
-      return "ok";
+    createPost: async (_, args, context) => {
+      const user = context.auth();
+      const post = { ...args.newPost };
+      post.authorId = user.id;
+      post.comments = post.likes = [];
+      post.createdAt = post.updatedAt = new Date();
+      const result = await Posts.addPost(post);
+      return result;
+    },
+    likePost: async (_, args, context) => {
+      const { id } = args;
+      const user = context.auth();
+      await Posts.likePost(id, user.username);
+      const result = await Posts.findById(id);
+      return result;
+    },
+    commentPost: async (_, args, context) => {
+      const { id, content } = args;
+      const user = context.auth();
+      await Posts.commentPost(id, user.username, content);
+      const result = await Posts.findById(id);
+      return result;
     },
   },
 };

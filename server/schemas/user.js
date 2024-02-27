@@ -18,13 +18,13 @@ const typeDefs = `#graphql
     password: String!
   }
 
-  type Token {
+  type accessToken {
     token: String
   }
 
   type Query {
     users : [User]
-    login(email: String, password: String) : Token
+    login(email: String, password: String) : accessToken
     findUser(username: String): User
   }
 

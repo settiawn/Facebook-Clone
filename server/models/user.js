@@ -28,7 +28,7 @@ module.exports = class User {
     const verifyPass = comparePassword(password, user.password);
     if (!verifyPass) throw new Error("Email/Password salah");
 
-    const token = signToken({ id: user._id, email: user.email });
+    const token = signToken({ id: user._id, username: user.username, email: user.email });
     return token;
   }
 
