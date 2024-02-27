@@ -18,12 +18,18 @@ const typeDefs = `#graphql
     password: String
   }
 
+  type Token {
+    token: String
+  }
+
   type Query {
     users : [User]
+    login(email: String, password: String) : Token
   }
 
   type Mutation {
-    addUser(newUser: newUser): User
+    register(newUser: newUser): User
+    
   }
 `;
 
@@ -32,24 +38,35 @@ const resolvers = {
   Query: {
     users: async () => {
       try {
-        const users = User.findAll()
-        return users
+        const users = User.findAll();
+        return users;
       } catch (error) {
         console.log(error);
-        throw error
+        throw error;
       }
-    }
+    },
+    login: async (_, args) => {
+      try {
+        const { email, password } = args;
+        if (!email) throw error;
+        if (!password) throw error;
+        const token = await User.getUser(email, password);
+        return { token };
+      } catch (error) {
+        throw error;
+      }
+    },
   },
   Mutation: {
-    addUser: async (_, args) => {
+    register: async (_, args) => {
       try {
-        const newUser = { ...args.newUser};
-        newUser.password = hashPassword(newUser.password)
+        const newUser = { ...args.newUser };
+        newUser.password = hashPassword(newUser.password);
         const user = await User.create(newUser);
         return user;
       } catch (error) {
         console.log(error);
-        throw error
+        throw error;
       }
     },
   },
