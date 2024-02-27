@@ -24,12 +24,17 @@ module.exports = class User {
 
   static async getUser(email, password) {
     const user = await userDB.findOne({ email });
-    if (!user) throw error;
+    if (!user) throw new Error("Email/Password salah");
     const verifyPass = comparePassword(password, user.password);
-    if (!verifyPass) throw error;
+    if (!verifyPass) throw new Error("Email/Password salah");
 
     const token = signToken({ id: user._id, email: user.email });
-
     return token;
+  }
+
+  static async findUser(username) {
+    const user = await userDB.findOne({ username });
+    if (!user) throw new Error("User tidak ditemukan");
+    return user;
   }
 };

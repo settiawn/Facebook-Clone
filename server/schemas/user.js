@@ -25,11 +25,11 @@ const typeDefs = `#graphql
   type Query {
     users : [User]
     login(email: String, password: String) : Token
+    findUser(username: String): User
   }
 
   type Mutation {
     register(newUser: newUser): User
-    
   }
 `;
 
@@ -48,10 +48,19 @@ const resolvers = {
     login: async (_, args) => {
       try {
         const { email, password } = args;
-        if (!email) throw error;
-        if (!password) throw error;
+        if (!email) throw new Error("Email tidak boleh kosong");
+        if (!password) throw new Error("Password tidak boleh kosong");
         const token = await User.getUser(email, password);
         return { token };
+      } catch (error) {
+        throw error;
+      }
+    },
+    findUser: async (_, args) => {
+      try {
+        const { username } = args;
+        const user = await User.findUser(username);
+        return user;
       } catch (error) {
         throw error;
       }
