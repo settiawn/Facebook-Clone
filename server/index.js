@@ -27,12 +27,13 @@ startStandaloneServer(server, {
     return {
       auth: () => {
         const { authorization } = req.headers;
+        if (!authorization) throw new Error("Auth failed");
         const [type, token] = authorization.split(" ");
         if (type !== "Bearer") throw new Error("Auth failed");
         const decoded = verifyToken(token);
         if (!decoded) throw new Error("Auth failed");
-        decoded.id = new ObjectId(String(decoded.id))
-        return decoded
+        decoded.id = new ObjectId(String(decoded.id));
+        return decoded;
       },
     };
   },

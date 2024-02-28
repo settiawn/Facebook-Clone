@@ -4,10 +4,9 @@ const postDB = database.collection("Posts");
 
 module.exports = class Posts {
   static async addPost(newPost) {
-    const result = await postDB.insertOne(newPost);
+    await postDB.insertOne(newPost);
     return {
       ...newPost,
-      id: result.insertedId,
     };
   }
 
@@ -20,9 +19,34 @@ module.exports = class Posts {
   }
 
   static async findById(id) {
-    const [result] = await postDB
-      .find({ _id: new ObjectId(String(id)) })
-      .toArray();
+    const agg = [
+      {
+        $match: {
+          _id: new ObjectId(String(id)),
+        },
+      },
+      {
+        $lookup: {
+          from: "User",
+          localField: "authorId",
+          foreignField: "_id",
+          as: "author",
+        },
+      },
+      {
+        $unwind: {
+          path: "$author",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          "author.password": 0,
+        },
+      },
+    ];
+    const [result] = await postDB.aggregate(agg).toArray();
+    console.log(result);
     return result;
   }
 

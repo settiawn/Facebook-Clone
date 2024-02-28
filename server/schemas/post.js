@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const Posts = require("../models/post");
 
 const typeDefs = `#graphql
@@ -11,7 +12,15 @@ const typeDefs = `#graphql
         likes: [Likes]
         createdAt: String
         updatedAt: String
+        author: User
     }
+
+    type User {
+    _id: ID
+    name: String
+    username: String!
+    email: String!
+  }
 
     type Comments {
         content: String!
@@ -33,7 +42,7 @@ const typeDefs = `#graphql
     }
 
   type Query {
-    getPosts : [Post]
+    getAllPosts : [Post]
     getPostById(id: String) : Post
 
   }
@@ -47,7 +56,8 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    getPosts: async (_, args, context) => {
+    getAllPosts: async (_, args, context) => {
+      //! dari yang terbaru (done)
       try {
         context.auth();
         const result = await Posts.findAll();
@@ -72,7 +82,7 @@ const resolvers = {
       try {
         const user = context.auth();
         const post = { ...args.newPost };
-        post.authorId = user.id;
+        post.authorId = new ObjectId(String(user.id));
         post.comments = post.likes = [];
         post.createdAt = post.updatedAt = new Date();
         const result = await Posts.addPost(post);
@@ -87,6 +97,7 @@ const resolvers = {
         const user = context.auth();
         await Posts.likePost(id, user.username);
         const result = await Posts.findById(id);
+        console.log(result);
         return result;
       } catch (error) {
         throw error;

@@ -37,14 +37,65 @@ module.exports = class User {
     return token;
   }
 
-  static async findUser(username) {
-    const user = await userDB.findOne({ username });
+  static async findUser(input) {
+    const regex = new RegExp(input, "i");
+    const user = await userDB.find({ name: { $regex: regex } }).toArray();
     if (!user) throw new Error("User tidak ditemukan");
     return user;
   }
 
   static async findById(id) {
-    const user = await userDB.findOne({ _id: new ObjectId(String(id)) });
+    const agg = [
+      {
+        $match: {
+          _id: new ObjectId(String(id)),
+        },
+      },
+      {
+        $lookup: {
+          from: "Follow",
+          localField: "_id",
+          foreignField: "followingId",
+          as: "followers",
+        },
+      },
+      {
+        $lookup: {
+          from: "Follow",
+          localField: "_id",
+          foreignField: "followerId",
+          as: "following",
+        },
+      },
+      {
+        $lookup: {
+          from: "User",
+          localField: "following.followingId",
+          foreignField: "_id",
+          as: "followingDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "User",
+          localField: "followers.followerId",
+          foreignField: "_id",
+          as: "followerDetails",
+        },
+      },
+      {
+        $project: {
+          password: 0,
+          "followingDetails.password": 0,
+          "followerDetails.password": 0,
+        },
+      },
+    ];
+
+    //! aggregate findbyId
+    const [user] = await userDB.aggregate(agg).toArray();
+    console.log(user);
+    // const user = await userDB.findOne({ _id: new ObjectId(String(id)) });
     if (!user) throw new Error("User tidak ditemukan");
     return user;
   }

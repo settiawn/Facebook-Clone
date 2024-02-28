@@ -9,7 +9,23 @@ const typeDefs = `#graphql
     name: String
     username: String!
     email: String!
-    password: String!
+  }
+
+  type UserDetail {
+    _id: ID
+    name: String
+    username: String!
+    email: String!
+    followers : [Follow]
+    following : [Follow]
+    followerDetails : [User]
+    followingDetails : [User]
+  }
+
+  type Follow {
+    _id: ID
+    followingId: ID
+    followerId: ID
   }
 
   input newUser {
@@ -25,8 +41,8 @@ const typeDefs = `#graphql
 
   type Query {
     login(email: String, password: String) : Token
-    findUser(username: String): User
-    findById(id: String): User
+    findUserByName(input: String): [User]
+    findUserById(id: String): UserDetail
   }
 
   type Mutation {
@@ -42,7 +58,7 @@ const resolvers = {
         const { email, password } = args;
         if (!email) throw new Error("Email tidak boleh kosong");
         if (!password) throw new Error("Password tidak boleh kosong");
-        const isEmail = validateEmail(newUser.email);
+        const isEmail = validateEmail(email);
         if (!isEmail) throw new Error("Email tidak sesuai format");
         if (password.length < 5)
           throw new Error("Password harus lebih dari 5 huruf");
@@ -53,19 +69,19 @@ const resolvers = {
         throw error;
       }
     },
-    findUser: async (_, args) => {
+    findUserByName: async (_, args) => {
       try {
-        const { username } = args;
-        const user = await User.findUser(username);
+        const { input } = args;
+        const user = await User.findUser(input);
         return user;
       } catch (error) {
         throw error;
       }
     },
-    findById: async (_, args) => {
+    findUserById: async (_, args) => {
       try {
         const { id } = args;
-        const user = await User.findById(username);
+        const user = await User.findById(id);
         return user;
       } catch (error) {
         throw error;
