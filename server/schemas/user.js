@@ -1,4 +1,5 @@
 const { hashPassword } = require("../helpers/bcrypt");
+const validateEmail = require("../helpers/regex");
 const User = require("../models/user");
 
 const typeDefs = `#graphql
@@ -18,14 +19,14 @@ const typeDefs = `#graphql
     password: String!
   }
 
-  type accessToken {
-    token: String
+  type Token {
+    accessToken: String
   }
 
   type Query {
-    users : [User]
-    login(email: String, password: String) : accessToken
+    login(email: String, password: String) : Token
     findUser(username: String): User
+    findById(id: String): User
   }
 
   type Mutation {
@@ -36,24 +37,18 @@ const typeDefs = `#graphql
 //controller
 const resolvers = {
   Query: {
-    users: async () => {
-      try {
-        const users = User.findAll();
-        return users;
-      } catch (error) {
-        console.log(error);
-        throw error;
-      }
-    },
     login: async (_, args) => {
       try {
         const { email, password } = args;
         if (!email) throw new Error("Email tidak boleh kosong");
         if (!password) throw new Error("Password tidak boleh kosong");
+        const isEmail = validateEmail(newUser.email);
+        if (!isEmail) throw new Error("Email tidak sesuai format");
         if (password.length < 5)
           throw new Error("Password harus lebih dari 5 huruf");
-        const token = await User.getUser(email, password);
-        return { token };
+
+        const accessToken = await User.login(email, password);
+        return { accessToken };
       } catch (error) {
         throw error;
       }
@@ -67,13 +62,32 @@ const resolvers = {
         throw error;
       }
     },
+    findById: async (_, args) => {
+      try {
+        const { id } = args;
+        const user = await User.findById(username);
+        return user;
+      } catch (error) {
+        throw error;
+      }
+    },
   },
   Mutation: {
     register: async (_, args) => {
       try {
         const newUser = { ...args.newUser };
+        if (!newUser.email) throw new Error("Email tidak boleh kosong");
+        if (!newUser.password) throw new Error("Password tidak boleh kosong");
+        const isEmail = validateEmail(newUser.email);
+        if (!isEmail) throw new Error("Email tidak sesuai format");
+        if (newUser.password.length < 5)
+          throw new Error("Password harus lebih dari 5 huruf");
+        const users = await User.findAll();
+        const isEmailUnique = users.filter((x) => x.email === newUser.email);
+        if (isEmailUnique.length > 0) throw new Error("Email telah terdaftar");
+
         newUser.password = hashPassword(newUser.password);
-        const user = await User.create(newUser);
+        const user = await User.register(newUser);
         return user;
       } catch (error) {
         console.log(error);

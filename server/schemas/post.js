@@ -47,39 +47,61 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    getPosts: async () => {
-      const result = await Posts.findAll();
-      return result;
+    getPosts: async (_, args, context) => {
+      try {
+        context.auth();
+        const result = await Posts.findAll();
+        return result;
+      } catch (error) {
+        throw error;
+      }
     },
-    getPostById: async (_, args) => {
-      const { id } = args;
-      const result = await Posts.findById(id);
-      return result;
+    getPostById: async (_, args, context) => {
+      try {
+        context.auth();
+        const { id } = args;
+        const result = await Posts.findById(id);
+        return result;
+      } catch (error) {
+        throw error;
+      }
     },
   },
   Mutation: {
     createPost: async (_, args, context) => {
-      const user = context.auth();
-      const post = { ...args.newPost };
-      post.authorId = user.id;
-      post.comments = post.likes = [];
-      post.createdAt = post.updatedAt = new Date();
-      const result = await Posts.addPost(post);
-      return result;
+      try {
+        const user = context.auth();
+        const post = { ...args.newPost };
+        post.authorId = user.id;
+        post.comments = post.likes = [];
+        post.createdAt = post.updatedAt = new Date();
+        const result = await Posts.addPost(post);
+        return result;
+      } catch (error) {
+        throw error;
+      }
     },
     likePost: async (_, args, context) => {
-      const { id } = args;
-      const user = context.auth();
-      await Posts.likePost(id, user.username);
-      const result = await Posts.findById(id);
-      return result;
+      try {
+        const { id } = args;
+        const user = context.auth();
+        await Posts.likePost(id, user.username);
+        const result = await Posts.findById(id);
+        return result;
+      } catch (error) {
+        throw error;
+      }
     },
     commentPost: async (_, args, context) => {
-      const { id, content } = args;
-      const user = context.auth();
-      await Posts.commentPost(id, user.username, content);
-      const result = await Posts.findById(id);
-      return result;
+      try {
+        const { id, content } = args;
+        const user = context.auth();
+        await Posts.commentPost(id, user.username, content);
+        const result = await Posts.findById(id);
+        return result;
+      } catch (error) {
+        throw error;
+      }
     },
   },
 };

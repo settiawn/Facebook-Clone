@@ -25,8 +25,15 @@ const resolvers = {
     },
   },
   Mutation: {
-    followUser: async () => {
-      return "OK";
+    followUser: async (_, args, context) => {
+      try {
+        const { id } = args;
+        const user = context.auth();
+        const result = await Follow.add(id, user.id);
+        return result;
+      } catch (error) {
+        throw error;
+      }
     },
   },
 };
