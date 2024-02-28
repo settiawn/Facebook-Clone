@@ -49,8 +49,8 @@ const typeDefs = `#graphql
 
   type Mutation {
     createPost(newPost: newPost): Post
-    likePost(id: String) : Post
-    commentPost(id: String, content: String) : Post
+    likePost(postId: String) : Post
+    commentPost(postId: String, content: String) : Post
   }
 `;
 
@@ -93,10 +93,10 @@ const resolvers = {
     },
     likePost: async (_, args, context) => {
       try {
-        const { id } = args;
+        const { postId } = args;
         const user = context.auth();
-        await Posts.likePost(id, user.username);
-        const result = await Posts.findById(id);
+        await Posts.likePost(postId, user.username);
+        const result = await Posts.findById(postId);
         console.log(result);
         return result;
       } catch (error) {
@@ -105,10 +105,10 @@ const resolvers = {
     },
     commentPost: async (_, args, context) => {
       try {
-        const { id, content } = args;
+        const { postId, content } = args;
         const user = context.auth();
-        await Posts.commentPost(id, user.username, content);
-        const result = await Posts.findById(id);
+        await Posts.commentPost(postId, user.username, content);
+        const result = await Posts.findById(postId);
         return result;
       } catch (error) {
         throw error;

@@ -54,9 +54,11 @@ module.exports = class Posts {
     const [post] = await postDB
       .find({ _id: new ObjectId(String(id)) })
       .toArray();
+    if (!post) throw new Error("Post not found");
 
     const validate = post.likes.filter((x) => x.username === username);
-    if (validate.length > 0) return null;
+    if (validate.length > 0) throw new Error("You already liked this post");
+
     const like = { username, createdAt: new Date(), updatedAt: new Date() };
     await postDB.updateOne(
       { _id: new ObjectId(String(id)) },
@@ -72,6 +74,12 @@ module.exports = class Posts {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
+    const [post] = await postDB
+      .find({ _id: new ObjectId(String(id)) })
+      .toArray();
+    if (!post) throw new Error("Post not found");
+
     await postDB.updateOne(
       { _id: new ObjectId(String(id)) },
       { $addToSet: { comments: comment } }

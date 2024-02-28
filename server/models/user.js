@@ -7,6 +7,7 @@ const userDB = database.collection("User");
 module.exports = class User {
   static async register(newUser) {
     const result = await userDB.insertOne(newUser);
+    delete newUser.password
     let createdUser = {
       _id: result.insertedId,
       ...newUser,
