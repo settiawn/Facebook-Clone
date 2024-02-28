@@ -1,10 +1,12 @@
 const { ObjectId } = require("mongodb");
 const { database } = require("../config/mongodb");
+const redis = require("../config/redis");
 const postDB = database.collection("Posts");
 
 module.exports = class Posts {
   static async addPost(newPost) {
     await postDB.insertOne(newPost);
+    await redis.del("posts:all");
     return {
       ...newPost,
     };
@@ -14,7 +16,16 @@ module.exports = class Posts {
     const options = {
       sort: { createdAt: -1 },
     };
+
+    const postCache = await redis.get("posts:all");
+    if (postCache) {
+      const data = JSON.parse(postCache);
+      return data;
+    }
+
     const result = await postDB.find({}, options).toArray();
+    await redis.set("posts:all", JSON.stringify(result));
+
     return result;
   }
 
