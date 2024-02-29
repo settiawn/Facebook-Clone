@@ -12,10 +12,29 @@ const styles = StyleSheet.create({
     color: "#3a5998",
     paddingLeft: 8,
   },
+  homeText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#3a5998",
+    paddingLeft: 8,
+  },
   logoContainer: {
     flexDirection: "row",
     alignItems: "center",
     padding: 30,
+  },
+  homeBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 10,
+    padding: 15,
+    backgroundColor: "white"
+  },
+  statusBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "white"
   },
   inputArea: {
     width: 300,

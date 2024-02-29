@@ -62,6 +62,7 @@ module.exports = class Posts {
   }
 
   static async likePost(id, username) {
+    await redis.del("posts:all");
     const [post] = await postDB
       .find({ _id: new ObjectId(String(id)) })
       .toArray();
@@ -79,6 +80,7 @@ module.exports = class Posts {
   }
 
   static async commentPost(id, username, content) {
+    await redis.del("posts:all");
     const comment = {
       username,
       content,
