@@ -10,8 +10,25 @@ import {
   Keyboard,
 } from "react-native";
 import styles from "./style";
+import { useState } from "react";
+import { gql, useMutation } from "@apollo/client";
+
+const INCREMENT_COUNTER = gql`
+  # Increments a back-end counter and gets its resulting value
+
+  mutation IncrementCounter {
+    currentValue
+  }
+`;
 
 export function Login({ navigation, route }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  function handleLogin() {
+    const [mutateFunction, { data, loading, error }] =
+      useMutation(INCREMENT_COUNTER);
+  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -40,8 +57,10 @@ export function Login({ navigation, route }) {
             />
           </View>
 
-          <TouchableOpacity style={styles.button}
-          onPress={() => navigation.navigate("Home")}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("Home")}
+          >
             <Text style={styles.buttonText}>LOGIN</Text>
           </TouchableOpacity>
 

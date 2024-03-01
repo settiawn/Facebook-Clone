@@ -6,6 +6,7 @@ const userDB = database.collection("User");
 
 module.exports = class User {
   static async register(newUser) {
+    console.log(newUser);
     const result = await userDB.insertOne(newUser);
     delete newUser.password
     let createdUser = {
@@ -18,10 +19,10 @@ module.exports = class User {
   static async findAll() {
     const options = {
       sort: { name: 1 },
-      projection: { _id: 0 },
+      projection: { password: 0 },
     };
     const result = await userDB.find({}, options).toArray();
-    return result;
+    return result; //butuh aggregate
   }
 
   static async login(email, password) {

@@ -6,31 +6,30 @@ import Home from "./screens/home";
 import { CreatePost } from "./screens/createPost";
 import { PostDetail } from "./screens/postDetail";
 import { Profile } from "./screens/profile";
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import client from "./config/apollo";
-
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <ApolloProvider client={client}>
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Login"
-        screenOptions={{ headerShown: false }}
-      >
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="CreatePost" component={CreatePost} />
-        <Stack.Screen
-          name="PostDetail"
-          component={PostDetail}
-          options={{ headerShown: true }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Register"
+          screenOptions={{ headerShown: false }}
+        >
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="CreatePost" component={CreatePost} />
+          <Stack.Screen
+            name="PostDetail"
+            component={PostDetail}
+            options={{ headerShown: true }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </ApolloProvider>
   );
 }

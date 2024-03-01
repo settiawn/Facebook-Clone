@@ -100,7 +100,7 @@ const resolvers = {
         if (!isEmail) throw new Error("Email tidak sesuai format");
         if (newUser.password.length < 5)
           throw new Error("Password harus lebih dari 5 huruf");
-        const users = await User.findAll();
+        const users = await User.findAll(); ///findOne
         const isEmailUnique = users.filter((x) => x.email === newUser.email);
         if (isEmailUnique.length > 0) throw new Error("Email telah terdaftar");
 

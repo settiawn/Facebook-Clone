@@ -19,6 +19,7 @@ const { ObjectId } = require("mongodb");
 const server = new ApolloServer({
   typeDefs: [userTypeDefs, postTypeDefs, followTypeDefs],
   resolvers: [userResolvers, postResolvers, followResolvers],
+  introspection: true
 });
 
 startStandaloneServer(server, {
