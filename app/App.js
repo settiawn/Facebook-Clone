@@ -6,11 +6,15 @@ import Home from "./screens/home";
 import { CreatePost } from "./screens/createPost";
 import { PostDetail } from "./screens/postDetail";
 import { Profile } from "./screens/profile";
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import client from "./config/apollo";
+
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
+    <ApolloProvider client={client}>
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Login"
@@ -27,5 +31,6 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </ApolloProvider>
   );
 }
