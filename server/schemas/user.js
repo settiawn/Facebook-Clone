@@ -69,8 +69,9 @@ const resolvers = {
         throw error;
       }
     },
-    findUserByName: async (_, args) => {
+    findUserByName: async (_, args, context) => {
       try {
+        context.auth();
         const { input } = args;
         const user = await User.findUser(input);
         return user;
@@ -78,8 +79,9 @@ const resolvers = {
         throw error;
       }
     },
-    findUserById: async (_, args) => {
+    findUserById: async (_, args, context) => {
       try {
+        context.auth();
         const { id } = args;
         const user = await User.findById(id);
         return user;

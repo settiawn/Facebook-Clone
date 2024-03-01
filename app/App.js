@@ -5,6 +5,7 @@ import { Login } from "./screens/login";
 import Home from "./screens/home";
 import { CreatePost } from "./screens/createPost";
 import { PostDetail } from "./screens/postDetail";
+import { Profile } from "./screens/profile";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,8 +20,11 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="CreatePost" component={CreatePost} />
-        <Stack.Screen name="PostDetail" component={PostDetail} options={{ headerShown: true }} />
-        <Stack.Screen name="Profile" component={CreatePost} options={{ headerShown: true }} />
+        <Stack.Screen
+          name="PostDetail"
+          component={PostDetail}
+          options={{ headerShown: true }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

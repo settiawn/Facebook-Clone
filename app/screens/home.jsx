@@ -13,6 +13,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import styles from "./style";
+import { Profile } from "./profile";
 
 function HomeScreen({ navigation, route }) {
   return (
@@ -150,7 +151,7 @@ export default function Home() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="People" component={HomeScreen} />
       <Tab.Screen name="Notification" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={HomeScreen} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 }
