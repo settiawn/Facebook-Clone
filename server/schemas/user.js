@@ -40,12 +40,13 @@ const typeDefs = `#graphql
   }
 
   type Query {
-    login(email: String, password: String) : Token
+    
     findUserByName(input: String): [User]
     findUserById(id: String): UserDetail
   }
 
   type Mutation {
+    login(email: String, password: String) : Token
     register(newUser: newUser): User
   }
 `;
@@ -53,22 +54,6 @@ const typeDefs = `#graphql
 //controller
 const resolvers = {
   Query: {
-    login: async (_, args) => {
-      try {
-        const { email, password } = args;
-        if (!email) throw new Error("Email tidak boleh kosong");
-        if (!password) throw new Error("Password tidak boleh kosong");
-        const isEmail = validateEmail(email);
-        if (!isEmail) throw new Error("Email tidak sesuai format");
-        if (password.length < 5)
-          throw new Error("Password harus lebih dari 5 huruf");
-
-        const accessToken = await User.login(email, password);
-        return { accessToken };
-      } catch (error) {
-        throw error;
-      }
-    },
     findUserByName: async (_, args, context) => {
       try {
         context.auth();
@@ -91,6 +76,22 @@ const resolvers = {
     },
   },
   Mutation: {
+    login: async (_, args) => {
+      try {
+        const { email, password } = args;
+        if (!email) throw new Error("Email tidak boleh kosong");
+        if (!password) throw new Error("Password tidak boleh kosong");
+        const isEmail = validateEmail(email);
+        if (!isEmail) throw new Error("Email tidak sesuai format");
+        if (password.length < 5)
+          throw new Error("Password harus lebih dari 5 huruf");
+
+        const accessToken = await User.login(email, password);
+        return { accessToken };
+      } catch (error) {
+        throw error;
+      }
+    },
     register: async (_, args) => {
       try {
         const newUser = { ...args.newUser };

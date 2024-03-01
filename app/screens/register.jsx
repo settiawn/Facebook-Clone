@@ -102,7 +102,7 @@ export function Register({ navigation, route }) {
           </View>
 
           <Text style={{ fontWeight: "bold", margin: 20 }}>Or</Text>
-          <TouchableOpacity onPress={() => navigation.goBack("Login")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Text style={{ fontWeight: "bold", color: "#3a5998" }}>
               Already have an account?
             </Text>

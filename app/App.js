@@ -16,7 +16,7 @@ export default function App() {
     <ApolloProvider client={client}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Register"
+          initialRouteName="Login"
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Register" component={Register} />
