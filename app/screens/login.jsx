@@ -11,8 +11,10 @@ import {
   Alert,
 } from "react-native";
 import styles from "./style";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { AuthContext } from "../App";
+import * as SecureStore from 'expo-secure-store';
 
 const LOGIN = gql`
   mutation Mutation($email: String, $password: String) {
@@ -27,16 +29,19 @@ export function Login({ navigation, route }) {
   const [password, setPassword] = useState("");
   const [handleLogin, { data, loading, error }] = useMutation(LOGIN);
 
+  const {isSignedIn, setisSignedIn} = useContext(AuthContext)
+
   async function submitLogin() {
     try {
-      await handleLogin({
+      const {data} = await handleLogin({
         variables: {
           email,
           password,
         },
       });
+      await SecureStore.setItemAsync("accessToken", data.login.accessToken)
       Alert.alert("Login Success");
-      navigation.navigate("Home");
+      setisSignedIn(true)
     } catch (err) {
       Alert.alert(error.message);
     }

@@ -11,8 +11,20 @@ import {
   SafeAreaView,
 } from "react-native";
 import styles from "./style";
+import * as SecureStore from 'expo-secure-store';
+import { useContext } from "react";
+import { AuthContext } from "../App";
 
 export function Profile({ navigation, route }) {
+  const {isSignedIn, setisSignedIn} = useContext(AuthContext)
+  async function handleLogout(){
+    try {
+      await SecureStore.deleteItemAsync("accessToken")
+      setisSignedIn(false)
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -30,6 +42,21 @@ export function Profile({ navigation, route }) {
               style={{ width: 25, height: 25 }}
             />
             <Text style={styles.homeText}>HacktivBook</Text>
+            <TouchableOpacity
+              style={{
+                marginLeft: 70,
+                backgroundColor: "skyblue",
+                padding: 5,
+                borderRadius: 8,
+              }}
+              onPress={handleLogout}
+            >
+              <Text
+                style={{ fontWeight: "bold", opacity: 50, color: "#3a5998" }}
+              >
+                LOGOUT
+              </Text>
+            </TouchableOpacity>
           </View>
           <View
             style={{
@@ -63,19 +90,21 @@ export function Profile({ navigation, route }) {
               flexDirection: "row",
               padding: 10,
               paddingTop: 5,
-              borderRadius: 10
+              borderRadius: 10,
             }}
           >
-            <TextInput style={{
+            <TextInput
+              style={{
                 borderRadius: 10,
                 width: 280,
                 borderWidth: 2,
-                padding: 4
+                padding: 4,
               }}
-              placeholder="Name.." />
+              placeholder="Name.."
+            />
             <TouchableOpacity
               style={{
-                padding: 10
+                padding: 10,
               }}
             >
               <Text
