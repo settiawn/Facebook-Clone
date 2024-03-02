@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import {
   TouchableOpacity,
   TextInput,
@@ -10,10 +11,30 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   SafeAreaView,
+  Alert,
 } from "react-native";
+import { LIKE_POST } from "./postDetail";
+import { GET_ALL_POST } from "./home";
 
 export function PostCard({ data }) {
   const navigation = useNavigation();
+  const [likePost] = useMutation(LIKE_POST, {
+    refetchQueries: [GET_ALL_POST],
+  });
+
+  async function handleLikePost() {
+    try {
+      await likePost({
+        variables: {
+          postId: data._id,
+        },
+      });
+      Alert.alert("You liked this post");
+    } catch (error) {
+      console.log(error);
+      Alert.alert(error.message);
+    }
+  }
   return (
     <View
       style={{
@@ -44,11 +65,18 @@ export function PostCard({ data }) {
           alignItems: "center",
         }}
       >
-        <Image
-          //! image content
-          source={require("../assets/fb.png")}
-          style={{ width: 330, height: 250 }}
-        />
+        {data.imgUrl ? (
+          <>
+            <Image
+              //! image content
+              source={{ uri: data.imgUrl }}
+              style={{ width: 330, height: 250 }}
+              alt={data.imgUrl}
+            />
+          </>
+        ) : (
+          <Text>No Image</Text>
+        )}
       </View>
       <View
         style={{
@@ -58,11 +86,11 @@ export function PostCard({ data }) {
           paddingTop: 5,
         }}
       >
-        <TouchableOpacity>
-          <Text>Like</Text>
+        <TouchableOpacity onPress={handleLikePost}>
+          <Text>Like ({data.likes.length})</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("PostDetail")}>
-          <Text>Comment</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("PostDetail", { _id: data._id })}>
+          <Text>Comment ({data.comments.length})</Text>
         </TouchableOpacity>
         <TouchableOpacity>
           <Text>Share</Text>

@@ -18,7 +18,7 @@ import { Profile } from "./profile";
 import { gql, useQuery } from "@apollo/client";
 import { PostCard } from "./postCard";
 
-const GET_ALL_POST = gql`
+export const GET_ALL_POST = gql`
   query Query {
     getAllPosts {
       _id
@@ -118,7 +118,7 @@ export default function Home() {
           let iconName;
 
           switch (route.name) {
-            case "Home":
+            case "HomeScreen":
               iconName = focused ? "home" : "home-outline";
               break;
             case "People":
@@ -139,7 +139,7 @@ export default function Home() {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="HomeScreen" component={HomeScreen} />
       <Tab.Screen name="People" component={HomeScreen} />
       <Tab.Screen name="Notification" component={HomeScreen} />
       <Tab.Screen name="Profile" component={Profile} />

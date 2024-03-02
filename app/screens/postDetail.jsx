@@ -57,7 +57,7 @@ const COMMENT_POST = gql`
   }
 `;
 
-const LIKE_POST = gql`
+ export const LIKE_POST = gql`
   mutation Mutation($postId: String) {
     likePost(postId: $postId) {
       _id
@@ -71,6 +71,7 @@ const LIKE_POST = gql`
 export function PostDetail({ navigation, route }) {
   const [comment, setComment] = useState("");
   const { _id } = route.params;
+  console.log(_id);
   const { loading, error, data } = useQuery(GET_POST_DETAIL, {
     variables: { getPostByIdId: _id },
   });
