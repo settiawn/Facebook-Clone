@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 
 export function Router() {
   const { isSignedIn } = useContext(AuthContext);
-  
+
   return (
     <Stack.Navigator
       initialRouteName="Login"

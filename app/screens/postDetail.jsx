@@ -13,6 +13,8 @@ import {
 import styles from "./style";
 
 export function PostDetail({ navigation, route }) {
+  const { _id } = route.params
+  console.log(_id);
   return (
     <SafeAreaView
       style={{

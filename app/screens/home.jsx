@@ -11,11 +11,56 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import styles from "./style";
 import { Profile } from "./profile";
+import { gql, useQuery } from "@apollo/client";
+import { PostCard } from "./postCard";
+
+const GET_ALL_POST = gql`
+  query Query {
+    getAllPosts {
+      _id
+      content
+      tags
+      imgUrl
+      authorId
+      likes {
+        username
+      }
+      createdAt
+      author {
+        _id
+        name
+        username
+        email
+      }
+      comments {
+        username
+        content
+      }
+    }
+  }
+`;
 
 function HomeScreen({ navigation, route }) {
+  const { loading, error, data } = useQuery(GET_ALL_POST);
+  if (loading)
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  if (error)
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>`Error! ${error.message}`</Text>
+      </View>
+    );
+
+  console.log(data.getAllPosts.length);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -52,65 +97,11 @@ function HomeScreen({ navigation, route }) {
           </View>
 
           {/* Post data below => render pake flatlist */}
-          <View
-            style={{
-              flexDirection: "column",
-              backgroundColor: "white",
-              margin: 10,
-            }}
-          >
-            <View style={{ flexDirection: "row", padding: 10 }}>
-              <Image
-                //! profil image
-                source={require("../assets/fb.png")}
-                style={{ width: 40, height: 40, marginRight: 8 }}
-              />
-              <Text style={{ fontWeight: "bold" }}>Nama Lengkap User</Text>
-            </View>
-            <TouchableOpacity
-            onPress={() => navigation.navigate("PostDetail")}
-            >
-              <Text style={{ fontWeight: "400", padding: 10, paddingTop: 0 }}>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                Distinctio, sapiente. Accusantium aliquam voluptates iure quia
-                eveniet tenetur quibusdam sit delectus earum deleniti at error
-                veniam, laboriosam doloribus dicta quo incidunt?
-              </Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                paddingHorizontal: 10,
-                paddingBottom: 10,
-                alignItems: "center",
-              }}
-            >
-              <Image
-                //! profil image
-                source={require("../assets/fb.png")}
-                style={{ width: 330, height: 250 }}
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                padding: 10,
-                paddingTop: 5,
-              }}
-            >
-              <TouchableOpacity>
-                <Text>Like</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("PostDetail")}
-              >
-                <Text>Comment</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text>Share</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <ScrollView>
+            {data.getAllPosts.map((x, i) => {
+              return <PostCard key={i} data={x} />;
+            })}
+          </ScrollView>
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>

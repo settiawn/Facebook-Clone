@@ -13,17 +13,37 @@ module.exports = class Posts {
   }
 
   static async findAll() {
-    const options = {
-      sort: { createdAt: -1 },
-    };
-
+    const agg = [
+      {
+        '$lookup': {
+          'from': 'User', 
+          'localField': 'authorId', 
+          'foreignField': '_id', 
+          'as': 'author'
+        }
+      }, {
+        '$unwind': {
+          'path': '$author', 
+          'preserveNullAndEmptyArrays': false
+        }
+      }, {
+        '$project': {
+          'author.password': 0
+        }
+      }, {
+        '$sort': {
+          'createdAt': -1
+        }
+      }
+    ];
+    
     const postCache = await redis.get("posts:all");
     if (postCache) {
       const data = JSON.parse(postCache);
       return data;
     }
 
-    const result = await postDB.find({}, options).toArray();
+    const result = await postDB.aggregate(agg).toArray();
     await redis.set("posts:all", JSON.stringify(result));
 
     return result;
