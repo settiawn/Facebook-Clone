@@ -206,6 +206,7 @@ export function PostDetail({ navigation, route }) {
 
             <View
               style={{
+                height: 500,
                 paddingHorizontal: 10,
               }}
             >

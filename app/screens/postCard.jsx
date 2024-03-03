@@ -49,7 +49,10 @@ export function PostCard({ data }) {
     >
       <View style={{ flexDirection: "row", padding: 10 }}>
         <Ionicons name="person-circle-outline" size="50" color="#3a5998" />
-        <Text style={{ fontWeight: "bold", paddingLeft: 10, paddingTop: 5, fontSize: 14 }}>{data.author.username}</Text>
+        <View style={{ flexDirection: "column", paddingLeft: 10, paddingTop: 5,}}>
+        <Text style={{ fontWeight: "bold", fontSize: 14 }}>{data.author.name}</Text>
+        <Text style={{ fontSize: 14 }}>@{data.author.username}</Text>
+        </View>
       </View>
       <TouchableOpacity
         onPress={() => navigation.navigate("PostDetail", { _id: data._id })}

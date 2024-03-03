@@ -34,6 +34,8 @@ export function People({ navigation, route }) {
     variables: { input },
   });
 
+  console.log(typeof data, '<<<<<');
+
   if (loading)
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -47,7 +49,14 @@ export function People({ navigation, route }) {
       </View>
     );
 
-  console.log(loading, error, data.findUserByName);
+  if (data.length === 0)
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>No Result</Text>
+      </View>
+    );
+
+  // console.log(loading, error, data.findUserByName);
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
