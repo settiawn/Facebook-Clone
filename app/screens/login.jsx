@@ -20,6 +20,7 @@ const LOGIN = gql`
   mutation Mutation($email: String, $password: String) {
     login(email: $email, password: $password) {
       accessToken
+      id
     }
   }
 `;
@@ -39,7 +40,9 @@ export function Login({ navigation, route }) {
           password,
         },
       });
+      console.log(data.login);
       await SecureStore.setItemAsync("accessToken", data.login.accessToken)
+      await SecureStore.setItemAsync("id", data.login.id)
       Alert.alert("Login Success");
       setisSignedIn(true)
     } catch (err) {

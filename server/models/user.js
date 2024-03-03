@@ -36,7 +36,9 @@ module.exports = class User {
       username: user.username,
       email: user.email,
     });
-    return token;
+
+    const result = {id: user._id, accessToken: token}
+    return result;
   }
 
   static async findUser(input) {

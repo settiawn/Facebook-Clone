@@ -18,6 +18,7 @@ import styles from "./style";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { Comment } from "./comment";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const GET_POST_DETAIL = gql`
   query Query($getPostByIdId: String) {
@@ -57,7 +58,7 @@ const COMMENT_POST = gql`
   }
 `;
 
- export const LIKE_POST = gql`
+export const LIKE_POST = gql`
   mutation Mutation($postId: String) {
     likePost(postId: $postId) {
       _id
@@ -71,7 +72,7 @@ const COMMENT_POST = gql`
 export function PostDetail({ navigation, route }) {
   const [comment, setComment] = useState("");
   const { _id } = route.params;
-  console.log(_id);
+  // console.log(_id);
   const { loading, error, data } = useQuery(GET_POST_DETAIL, {
     variables: { getPostByIdId: _id },
   });
@@ -124,7 +125,8 @@ export function PostDetail({ navigation, route }) {
       </View>
     );
 
-  console.log(data.getPostById.likes);
+  const tags = data.getPostById.tags.join(", ");
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -136,97 +138,116 @@ export function PostDetail({ navigation, route }) {
             backgroundColor: "white",
           }}
         >
-          <View style={{ flexDirection: "row", padding: 10 }}>
-            <Image
-              //! profil image
-              source={require("../assets/fb.png")}
-              style={{ width: 40, height: 40, marginRight: 8 }}
-            />
-            <Text style={{ fontWeight: "bold" }}>
-              {data.getPostById.author.name}
+          <ScrollView>
+            <View style={{ flexDirection: "row", padding: 10 }}>
+              <Ionicons
+                name="person-circle-outline"
+                size="50"
+                color="#3a5998"
+              />
+              <Text
+                style={{ fontWeight: "bold", paddingTop: 10, paddingLeft: 10 }}
+              >
+                {data.getPostById.author.name}
+              </Text>
+            </View>
+            <Text style={{ fontWeight: "400", padding: 10, paddingTop: 0 }}>
+              {data.getPostById.content}
             </Text>
-          </View>
-          <Text style={{ fontWeight: "400", padding: 10, paddingTop: 0 }}>
-            {data.getPostById.content}
-          </Text>
-          <Text style={{ fontWeight: "400", padding: 10, paddingTop: 0 }}>
-            Tags : {data.getPostById.tags}
-          </Text>
-          <View
-            style={{
-              paddingHorizontal: 10,
-              paddingBottom: 10,
-              alignItems: "center",
-            }}
-          >
-            <Image
-              //! image post
-              source={{ uri: data.getPostById.imgUrl }}
-              style={{ width: 330, height: 250 }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              padding: 10,
-              paddingTop: 5,
-            }}
-          >
-            <TouchableOpacity onPress={handleLikePost}>
-              <Text>Like ({data.getPostById.likes.length}) </Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text>Comment ({data.getPostById.comments.length})</Text>
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              paddingHorizontal: 10,
-              paddingBottom: 10,
-              marginVertical: 5,
-            }}
-          >
-            <View style={{ height: 300 }}>
-              <ScrollView>
-                {data.getPostById.comments.map((x, i) => {
-                  return <Comment key={i} data={x} />;
-                })}
-              </ScrollView>
+            {data.getPostById.tags ? (
+              <>
+                <Text style={{ fontWeight: "400", padding: 10, paddingTop: 0 }}>
+                  Tags : {tags}
+                </Text>
+              </>
+            ) : (
+              <View></View>
+            )}
+            <View
+              style={{
+                paddingHorizontal: 10,
+                paddingBottom: 10,
+                alignItems: "center",
+              }}
+            >
+              {data.getPostById.imgUrl ? (
+                <>
+                  <Image
+                    //! image content
+                    source={{ uri: data.getPostById.imgUrl }}
+                    style={{ width: 330, height: 250 }}
+                    alt={data.getPostById.imgUrl}
+                  />
+                </>
+              ) : (
+                <View></View>
+              )}
             </View>
             <View
               style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                backgroundColor: "white",
-                marginBottom: 15,
+                flexDirection: "row",
+                justifyContent: "space-between",
                 padding: 10,
-                paddingBottom: 25,
+                paddingTop: 5,
               }}
             >
-              <View
+              <TouchableOpacity
+                onPress={handleLikePost}
+                style={{ flexDirection: "row" }}
+              >
+                <Ionicons name="thumbs-up-sharp" size="30" color="#3a5998" />
+                <Text>({data.getPostById.likes.length}) </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ flexDirection: "row" }}>
+                <Ionicons name="chatbox-sharp" size="30" color="#3a5998" />
+                <Text>({data.getPostById.comments.length})</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                paddingHorizontal: 10,
+              }}
+            >
+              {data.getPostById.comments.map((x, i) => {
+                return <Comment key={i} data={x} />;
+              })}
+            </View>
+          </ScrollView>
+
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
+              backgroundColor: "white",
+              paddingHorizontal: 10,
+              paddingBottom: 10,
+              marginVertical: 5,
+              flexDirection: "row",
+            }}
+          >
+            <TextInput
+              multiline={true}
+              onChangeText={setComment}
+              style={{
+                backgroundColor: "white",
+                padding: 10,
+                paddingRight: 150,
+              }}
+              placeholder="Type a comment..."
+            />
+            <TouchableOpacity onPress={handleSendComment} style={{ flex: 1 }}>
+              <Text
                 style={{
-                  backgroundColor: "white",
-                  flexDirection: "row",
+                  fontWeight: "bold",
+                  alignSelf: "flex-end",
+                  width: 50,
                 }}
               >
-                <TextInput
-                  multiline={true}
-                  onChangeText={setComment}
-                  style={{
-                    backgroundColor: "white",
-                    padding: 10,
-                    paddingRight: 150,
-                  }}
-                  placeholder="Type a comment..."
-                />
-                <TouchableOpacity onPress={handleSendComment}>
-                  <Text>Send</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+                Send
+              </Text>
+            </TouchableOpacity>
           </View>
         </SafeAreaView>
       </TouchableWithoutFeedback>

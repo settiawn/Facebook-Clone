@@ -21,7 +21,7 @@ export function Router() {
       {isSignedIn ? (
         <>
           <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="CreatePost" component={CreatePost} />
+          <Stack.Screen name="CreatePost" component={CreatePost}/>
           <Stack.Screen
             name="PostDetail"
             component={PostDetail}

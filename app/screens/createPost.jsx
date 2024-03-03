@@ -15,6 +15,7 @@ import styles from "./style";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { GET_ALL_POST } from "./home";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const CREATE_POST = gql`
   mutation Mutation($newPost: newPost) {
@@ -80,11 +81,7 @@ export function CreatePost({ navigation, route }) {
           backgroundColor: "white",
         }}
       >
-        <Image
-          //! back button
-          source={require("../assets/fb.png")}
-          style={{ width: 40, height: 40, marginRight: 8 }}
-        />
+        <Ionicons name="chevron-back" size="50" color="#3a5998" onPress={() => navigation.navigate("Home")} />
         <Text style={{ fontWeight: "bold", fontSize: 20 }}>Create Post</Text>
         <TouchableOpacity
           style={{

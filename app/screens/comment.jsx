@@ -3,6 +3,7 @@ import {
   View,
   Image,
 } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export function Comment({ data }) {
   return (
@@ -13,11 +14,7 @@ export function Comment({ data }) {
         backgroundColor: "white",
       }}
     >
-      <Image
-        //! profil image
-        source={require("../assets/fb.png")}
-        style={{ width: 40, height: 40, marginRight: 8 }}
-      />
+      <Ionicons name="person-circle-outline" size="50" color="#3a5998" />
       <View style={{ flexDirection: "column" }}>
         <Text style={{ fontWeight: "bold" }}>{data.username}</Text>
         <Text style={{ paddingTop: 5 }}>{data.content}</Text>

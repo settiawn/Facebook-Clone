@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { LIKE_POST } from "./postDetail";
 import { GET_ALL_POST } from "./home";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export function PostCard({ data }) {
   const navigation = useNavigation();
@@ -35,6 +36,9 @@ export function PostCard({ data }) {
       Alert.alert(error.message);
     }
   }
+
+  const tags = data.tags.join(", ");
+
   return (
     <View
       style={{
@@ -44,12 +48,8 @@ export function PostCard({ data }) {
       }}
     >
       <View style={{ flexDirection: "row", padding: 10 }}>
-        <Image
-          //! profil image
-          source={require("../assets/fb.png")}
-          style={{ width: 40, height: 40, marginRight: 8 }}
-        />
-        <Text style={{ fontWeight: "bold" }}>{data.author.username}</Text>
+        <Ionicons name="person-circle-outline" size="50" color="#3a5998" />
+        <Text style={{ fontWeight: "bold", paddingLeft: 10, paddingTop: 5, fontSize: 14 }}>{data.author.username}</Text>
       </View>
       <TouchableOpacity
         onPress={() => navigation.navigate("PostDetail", { _id: data._id })}
@@ -57,6 +57,15 @@ export function PostCard({ data }) {
         <Text style={{ fontWeight: "400", padding: 10, paddingTop: 0 }}>
           {data.content}
         </Text>
+        {data.tags ? (
+          <>
+            <Text style={{ fontWeight: "400", padding: 10, paddingTop: 0 }}>
+              Tags : {tags}
+            </Text>
+          </>
+        ) : (
+          <View></View>
+        )}
       </TouchableOpacity>
       <View
         style={{
@@ -68,32 +77,37 @@ export function PostCard({ data }) {
         {data.imgUrl ? (
           <>
             <Image
-              //! image content
               source={{ uri: data.imgUrl }}
               style={{ width: 330, height: 250 }}
               alt={data.imgUrl}
             />
           </>
         ) : (
-          <Text>No Image</Text>
+          <View></View>
         )}
       </View>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
+          alignContent: "center",
           padding: 10,
           paddingTop: 5,
         }}
       >
-        <TouchableOpacity onPress={handleLikePost}>
-          <Text>Like ({data.likes.length})</Text>
+        <TouchableOpacity onPress={handleLikePost} style={{ flexDirection: "row"}}>
+        <Ionicons name="thumbs-up-sharp" size="30" color="#3a5998" />
+          <Text>({data.likes.length})</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("PostDetail", { _id: data._id })}>
-          <Text>Comment ({data.comments.length})</Text>
+        <TouchableOpacity
+         style={{ flexDirection: "row"}}
+          onPress={() => navigation.navigate("PostDetail", { _id: data._id })}
+        >
+        <Ionicons name="chatbox-sharp" size="30" color="#3a5998" />
+          <Text>({data.comments.length})</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text>Share</Text>
+        <TouchableOpacity style={{ flexDirection: "row"}}>
+        <Ionicons name="arrow-redo-sharp" size="30" color="#3a5998" />
         </TouchableOpacity>
       </View>
     </View>

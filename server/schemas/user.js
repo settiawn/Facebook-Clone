@@ -37,6 +37,7 @@ const typeDefs = `#graphql
 
   type Token {
     accessToken: String
+    id: String
   }
 
   type Query {
@@ -86,8 +87,8 @@ const resolvers = {
         if (password.length < 5)
           throw new Error("Password harus lebih dari 5 huruf");
 
-        const accessToken = await User.login(email, password);
-        return { accessToken };
+        const result = await User.login(email, password);
+        return result
       } catch (error) {
         throw error;
       }

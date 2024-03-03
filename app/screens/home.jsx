@@ -17,6 +17,9 @@ import styles from "./style";
 import { Profile } from "./profile";
 import { gql, useQuery } from "@apollo/client";
 import { PostCard } from "./postCard";
+import { createContext, useEffect, useState } from "react";
+import * as SecureStore from "expo-secure-store";
+import { People } from "./people";
 
 export const GET_ALL_POST = gql`
   query Query {
@@ -46,6 +49,7 @@ export const GET_ALL_POST = gql`
 
 function HomeScreen({ navigation, route }) {
   const { loading, error, data } = useQuery(GET_ALL_POST);
+
   if (loading)
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -58,8 +62,6 @@ function HomeScreen({ navigation, route }) {
         <Text>`Error! ${error.message}`</Text>
       </View>
     );
-
-  console.log(data.getAllPosts.length);
 
   return (
     <KeyboardAvoidingView
@@ -76,27 +78,18 @@ function HomeScreen({ navigation, route }) {
             <Text style={styles.homeText}>HacktivBook</Text>
           </View>
           <View style={styles.statusBanner}>
-            <Image
-              //! profil image
-              source={require("../assets/fb.png")}
-              style={{ width: 35, height: 35, marginRight: 8 }}
-            />
+            <Ionicons name="person-circle-outline" size="50" color="#3a5998"/>
             <TouchableOpacity>
               <Text
-                style={{ fontStyle: "italic", fontSize: 18, paddingRight: 50 }}
+                style={{ fontStyle: "italic", fontSize: 18, paddingRight: 30 }}
                 onPress={() => navigation.navigate("CreatePost")}
               >
                 What's on your mind?
               </Text>
             </TouchableOpacity>
-            <Image
-              //! icon gambar
-              source={require("../assets/fb.png")}
-              style={{ width: 35, height: 35, marginRight: 8 }}
-            />
+            <Ionicons name="paper-plane" size="40" color="#3a5998" onPress={() => navigation.navigate("CreatePost")} />
           </View>
-
-          {/* Post data below => render pake flatlist */}
+          {/* loopingan */}
           <ScrollView>
             {data.getAllPosts.map((x, i) => {
               return <PostCard key={i} data={x} />;
@@ -109,9 +102,24 @@ function HomeScreen({ navigation, route }) {
 }
 
 const Tab = createBottomTabNavigator();
+export const IdContext = createContext("");
 
 export default function Home() {
+  const [id, setId] = useState("");
+
+  useEffect(() => {
+    getId();
+  }, []);
+
+  async function getId() {
+    const id = await SecureStore.getItemAsync("id");
+    setId(id);
+  }
+
+  // console.log(id);
+
   return (
+    <IdContext.Provider value={id}>
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
@@ -140,9 +148,11 @@ export default function Home() {
       })}
     >
       <Tab.Screen name="HomeScreen" component={HomeScreen} />
-      <Tab.Screen name="People" component={HomeScreen} />
+      <Tab.Screen name="People" component={People} initialParams={{input: ""}}/>
       <Tab.Screen name="Notification" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Profile" component={Profile} initialParams={{id: id}} />
     </Tab.Navigator>
+
+    </IdContext.Provider>
   );
 }
